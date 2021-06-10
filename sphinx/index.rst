@@ -13,7 +13,7 @@ The devicely package is made for reading, writing and timeshifting health sensor
 * `1-lead ECG monitor FarosTM 180 from Bittium (Firmware 3.5.1) <https://shop.bittium.com/product/36/bittium-faros-180-solution-pack/>`_
 * `Spacelabs (SL 90217) <https://www.spacelabshealthcare.com/products/diagnostic-cardiology/abp-monitoring/90217a/>`_
 * `Tags (obtained from the app: TimeStamp for Android Version 1.36) <https://play.google.com/store/apps/details?id=gj.timestamp&hl=en/>`_
-* `Shimmer Consensys GSR (Shimmer3 GSR Development Kit) <https://www.shimmersensing.com/products/gsr-optical-pulse-development-kit#specifications-tab/>`_
+* `Muse S <https://choosemuse.com/de/muse-s/> <https://mind-monitor.com>`_
 
 
 Examples
@@ -335,6 +335,59 @@ Write the data to file:
 
    >>> tag_reader.write('path/to/writingfile')
    >>> 'writingfile' in os.listdir('path/to')
+   True
+
+Muse
+#########
+
+Look at `MuseS <https://choosemuse.com/de/muse-s/>`_ and `MindMonitor <https://mind-monitor.com>`_for an example file created by the Spacelabs ABPM monitoring system.
+
+Creating a :code:`MuseReader` object, passing such a file as a parameter:
+
+.. code-block:: Python
+
+   >>> muse_reader = devicely.MuseReader('path/to/filename.csv')
+
+Accessing the data:
+
+.. code-block:: Python
+
+   >>> muse_reader.data.head(6)
+                           TimeStamp  Delta_TP9  Delta_AF7  Delta_AF8  Delta_TP10  Theta_TP9  Theta_AF7  Theta_AF8  Theta_TP10  Alpha_TP9  Gyro_X    Gyro_Y    Gyro_Z  HeadBandOn  HSI_TP9  HSI_AF7  HSI_AF8 HSI_TP10  Battery  Elements
+   0  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN 
+   1  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+   2  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+   3  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+   4  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+   5  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+
+Change the data by timeshifting the time of sampling by a random interval between one month and two years to the past.
+If you would like to keep control over the shifting interval, you can provide either a :code:`pandas.Timedelta` or a :code:`pandas.Timestamp` object as a parameter to :code:`MuseReader.timeshift()`.
+
+.. code-block:: Python
+
+   >>> muse_reader.data.head(3)
+                           TimeStamp  Delta_TP9  Delta_AF7  Delta_AF8  Delta_TP10  Theta_TP9  Theta_AF7  Theta_AF8  Theta_TP10  Alpha_TP9  Gyro_X    Gyro_Y    Gyro_Z  HeadBandOn  HSI_TP9  HSI_AF7  HSI_AF8 HSI_TP10  Battery  Elements
+   0  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN 
+   1  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+   2  2021-04-06 18:22:04.1617733324   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+
+
+   >>> spacelabs_reader.timeshift()
+
+   >>> muse_reader.data.head(3)
+                           TimeStamp  Delta_TP9  Delta_AF7  Delta_AF8  Delta_TP10  Theta_TP9  Theta_AF7  Theta_AF8  Theta_TP10  Alpha_TP9  Gyro_X    Gyro_Y    Gyro_Z  HeadBandOn  HSI_TP9  HSI_AF7  HSI_AF8 HSI_TP10  Battery  Elements
+   0  2021-09-17 12:54:07.3258758327   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN 
+   1  2021-09-17 12:54:07.3258758327   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+   2  2021-09-17 12:54:07.3258758327   0.913638   0.180639    0.08185    1.111373   0.987367  -0.194577   0.093846    1.044933   0.959768  3.065491  1.824341  2.676697         1.0      1.0      1.0      1.0     1.0     70.0       NaN   
+
+
+Write the data back to disk. The written data keeps the same format as the original file, so you can use a MuseReader to read it again.
+
+.. code-block:: Python
+
+   >>> muse_reader.write('path/to/', 'filename.csv')
+   >>> 'path/to/filename.csv' in os.listdir()
    True
 
 
